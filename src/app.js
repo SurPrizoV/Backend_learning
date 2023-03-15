@@ -1,35 +1,51 @@
 const http = require("http");
-const url = require("url");
+const HOST = "localhost";
+const PORT = 3003;
 const getUsers = require("./modules/users");
 
-const hostname = "127.0.0.1";
-const port = 3003;
-const server = http.createServer((request, response) => {
-  let queryData = url.parse(request.url, true).query;
+const requestListener = function (req, res) {
+  const url = new URL(req.url, "http://127.0.0.1");
+  const name = url.searchParams.get("hello");
+  const searchParams = url.searchParams;
 
-   if (request.url === "/?users") {
-     response.statusCode = 200;
-     response.setHeader("Content-Type", "application/json");
-     response.end(getUsers());
-     return;
-   }
-
-  if (queryData.name) {
-    response.statusCode = 200;
-    response.setHeader("Content-Type", "text/plain");
-    response.end("Hello " + queryData.name + "\n");
-  } else if (queryData.name === "") {
-    response.statusCode = 400;
-    response.setHeader("Content-Type", "text/plain");
-    response.end("Enter a name");
-  } else if (queryData) {
-    response.statusCode = 200;
-    response.setHeader("Content-Type", "text/plain");
-    response.end("Hello, World!");
+  if (url.searchParams.has("users")) {
+    res.statusMessage = "ok";
+    res.setHeader("Content-Type", "application/json");
+    res.write(getUsers());
+    res.end();
     return;
   }
-});
+  if (name) {
+    res.statusCode = 200;
+    res.statusMessage = "ok";
+    res.setHeader("Content-Type", "text/html; charset=utf8");
+    const name = url.searchParams.get("hello");
+    res.write(`Hello, ${name}`);
+    res.end();
+    return;
+  }
+  if (name === "" || name === " ") {
+    res.statusCode = 400;
+    res.statusMessage = " Bad Request";
+    res.setHeader("Content-Type", "text/html; charset=utf8");
+    const name = url.searchParams.get("hello");
+    res.write(`Enter a name`);
+    res.end();
+    return;
+  }
+  if (![...searchParams].length) {
+    res.statusCode = 200;
+    res, (statusMessage = "ok");
+    res.setHeader("Content-Type", "text/html; charset=utf8");
+    res.write("<h1>Hello, world!</h1>");
+    res.end();
+  }
+  res.statusCode = 500;
+  res.statusMessage = "Internal Server Error";
+  res.end();
+};
+const server = http.createServer(requestListener);
 
-server.listen(port, hostname, () => {
-  console.log(`Сервер запущен по адресу http://${hostname}:${port}/`);
+server.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
 });
