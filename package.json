@@ -1,0 +1,24 @@
+{
+  "name": "home_work",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SurPrizoV/Backend_learning.git"
+  },
+  "author": "Roman Prizov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SurPrizoV/Backend_learning/issues"
+  },
+  "homepage": "https://github.com/SurPrizoV/Backend_learning#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
+}
